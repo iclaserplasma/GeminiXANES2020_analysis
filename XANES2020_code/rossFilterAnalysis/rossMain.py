@@ -13,6 +13,7 @@ The results from this script should be within 10 % of the more accurate (but slo
 
 @author: Kristoffer Svendsen
 """
+
 import os, sys
 
 # rossPath = os.path.dirname(os.path.realpath(__file__))
@@ -23,7 +24,6 @@ from XANES2020_code.rossFilterAnalysis.rossSetup  import *
 import numpy as np
 from scipy import interpolate
 from XANES2020_code.rossFilterAnalysis.rossTheoretical import Tth, Ec, QE_data, camResp, Ttotal, E
-from scipy.special import kv
 
 import matplotlib.pyplot as plt
 
@@ -35,7 +35,7 @@ def rossMain(raw, plots =False):
     
     
     # raw = Image.open("Run4_Shot022_2020-09-03.tif")
-    nFilt=18;   #number of filters to be analysed (count duplicated)
+    nFilt=16;   #number of filters to be analysed (count duplicated)
     
     #image rotation and BG subtraction    
     raw=raw.rotate(92)  #totate the image to get it straigth, changes with alignment...
@@ -57,13 +57,20 @@ def rossMain(raw, plots =False):
     # %% take mean at each filter position
    
     #manually put in coords for all filters...also changes with alignment
-    y = np.array([134, 141, 146, 150, 158, 160, 438, 434, 438, 734, 746, 753, 753, 748, 1054, 1063, 1365, 1365])-34-w/2; 
-    x = np.array([176, 408, 636, 859, 1091, 1321, 415, 637, 868, 173, 402, 647, 872, 1092, 1318, 1552, 1312, 1561])-26-w/2; 
+    # y = np.array([134, 141, 146, 150, 158, 160, 438, 434, 438, 734, 746, 753, 753, 748, 1054, 1063, 1365, 1365])-34-w/2; 
+    # x = np.array([176, 408, 636, 859, 1091, 1321, 415, 637, 868, 173, 402, 647, 872, 1092, 1318, 1552, 1312, 1561])-26-w/2; 
+    
+    ydiff=40
+    xdiff=32
+    
+    y = np.array([120, 124, 117, 422, 426, 422, 422, 422, 734, 736, 1053, 1034, 1043, 1055, 1348, 1362])-ydiff-w/2; 
+    x = np.array([830, 1044, 1289, 608, 819, 1061, 1300, 1525, 1761, 1993, 114, 349, 1756, 2001, 141, 354])-xdiff-w/2; 
+    
     
     counter=0;
     imgMeans=np.zeros( nFilt )
            
-    # plt.imshow(raw)       #used during coordinate allocation for new alignments
+    plt.imshow(raw)       #used during coordinate allocation for new alignments
     for i in range(0,nFilt):        
         # # use to plot rectangles to make sure mean is taken at correct filter positions    
         # rect = plt.Rectangle((x[i],y[i]),w,w,linewidth=1,edgecolor='r',facecolor='none')
@@ -79,8 +86,11 @@ def rossMain(raw, plots =False):
     wb=50   #widthbox for background gradient
     
     #input coordinates, these will generate a meshgrid. i.e. each value represents an entire row/column
-    xb=np.array([120, 340, 580, 810, 1040, 1260, 1500]) 
-    yb=np.array([230, 520, 830, 1140, 1450, 1750])
+    xb=np.array([80, 80]) 
+    yb=np.array([200, 510])
+    
+    xb=np.linspace(80, 1930,9) 
+    yb=np.linspace(200, 1430,5)
 
     nx=len(xb)
     ny=len(yb)
@@ -95,7 +105,7 @@ def rossMain(raw, plots =False):
     f_list=[]
     
     #index to know which row each y value is located in...This is ugly but i couldn't think of a better way at the moment
-    x_ind = np.array([0, 1, 2, 3, 4, 5, 1, 2, 3, 0, 1, 2, 3, 4, 5, 6, 5, 6])
+    x_ind = np.array([3, 4, 5, 2, 3, 4, 5, 6, 7, 8, 0, 1, 7, 8, 0, 1])
     
     # plt.imshow(raw)    #used to check position
     
@@ -103,7 +113,7 @@ def rossMain(raw, plots =False):
     for i in range(0,nx):
          #loop over each column in the image and interpolate along the column
         for j in range(0,ny):
-            # #plot rectangles, used to check position
+            #plot rectangles, used to check position
             # rect = plt.Rectangle((Xb[j,i],Yb[j,i]),wb,wb,linewidth=1,edgecolor='r',facecolor='none')
             # currentAxis = plt.gca()
             # currentAxis.add_patch(rect)            
@@ -165,6 +175,7 @@ def rossMain(raw, plots =False):
         for i in range(1,len(filtLeg)+1):
             ind2 = np.where(filtMat_ind==i) #search filtMat_ind for all filters of same i
             filtStd[i-1]=np.std(filtMeans[ind2])    #take std of the i'th similar filters
+            print(filtStd)
             uniFiltMean[i-1]=np.mean(filtMeans[ind2])   #take mean of the i'th similar filters
             uniTthMean[i-1]=np.mean(Tth[np.argmin(sumResid),ind2])  #do the same search for the theoretical, since they are arranged the same way we also take the mean to make it easy, altougth it's useless
         
