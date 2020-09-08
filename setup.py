@@ -10,7 +10,7 @@ data_files = ['pkg_data/*','pkg_data/*/*','pkg_data/*/*/*']
 
 # print(data_files)
 setup(name='XANES2020_code',
-      version='0.1',
+      version='0.1.1',
       packages=find_packages(),
       zip_safe=False,
       include_package_data=True,
