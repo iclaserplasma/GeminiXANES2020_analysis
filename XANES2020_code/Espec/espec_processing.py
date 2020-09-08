@@ -33,9 +33,11 @@ class ESpec_high_proc():
         self.screen_dy = np.mean(np.diff(self.screen_y_mm))
         # dispersion calibration
         Espec_cal = loadmat(Espec_cal_filepath)
+    
         self.spec_x_mm = Espec_cal['spec_x_mm'].flatten()
         self.spec_MeV = Espec_cal['spec_MeV'].flatten()
-        self.spec_cal_func = interp1d(self.spec_x_mm, self.spec_MeV, 
+        iSel = np.isfinite(self.spec_MeV)
+        self.spec_cal_func = interp1d(self.spec_x_mm[iSel], self.spec_MeV[iSel], 
             kind='linear', copy=True, bounds_error=False, fill_value=0)
         
         self.screen_energy = self.spec_cal_func(self.screen_x_mm)
