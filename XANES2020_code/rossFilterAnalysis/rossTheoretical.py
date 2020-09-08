@@ -11,11 +11,7 @@ If the transport line transmission changes, this also needs to be changed in thi
 from XANES2020_code.rossFilterAnalysis.rossSetup import *
 import numpy as np
 import pandas as pd
-import os
 from scipy.special import kv
-from pathlib import Path
-from XANES2020_code import PKG_DATA
-rossPath = Path(os.path.join(PKG_DATA,'rossFilterAnalysis'))
 
 
 # constants
@@ -29,7 +25,7 @@ E=np.linspace(10,25000,501);
 # %% Filters and QE
 
 #  Import Andor QE data
-QE_data_temp=pd.read_csv(rossPath / 'ikonl_qe.txt', sep = '\t', decimal = '.', header = None); #import quantum efficiency for Ikon-L SO
+QE_data_temp=pd.read_csv('ikonl_qe.txt', sep = '\t', decimal = '.', header = None); #import quantum efficiency for Ikon-L SO
 QE_data_temp=QE_data_temp.values;   #extract values
 
 # plt.plot(QE_data_temp[:,0],QE_data_temp[:,1])
@@ -37,19 +33,19 @@ QE_data = np.interp(E, QE_data_temp[:,0], QE_data_temp[:,1]);   #interpolate the
 # plt.plot(E,yinterp)
 
 #import filter data in energy ranges 1 kev to 25 kev with 501 values. imports only the transmission, usecol says "Energy" but it is actually the transmission being imported
-Al_foil = pd.read_csv(rossPath / 'Al_foil.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
-Air = pd.read_csv(rossPath / 'Air_8p5cm.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
-Be = pd.read_csv(rossPath / 'Be_250mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
-Co = pd.read_csv(rossPath / 'Co_5p3mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']); 
-Fe = pd.read_csv(rossPath / 'Fe_6p4mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
-filterBacking = pd.read_csv(rossPath / 'filterBacking.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
-Kapton = pd.read_csv(rossPath / 'Kapton_150mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']); 
-Mo = pd.read_csv(rossPath / 'Mo_100mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
-Nb = pd.read_csv(rossPath / 'Nb_125mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
-Pd = pd.read_csv(rossPath / 'Pd_69mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
-Sn = pd.read_csv(rossPath / 'Sn_90mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
-V = pd.read_csv(rossPath / 'V_10p8mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
-Zn = pd.read_csv(rossPath / 'Zn_4p7mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']); 
+Al_foil = pd.read_csv('Al_foil.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
+Air = pd.read_csv('Air_8p5cm.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
+Be = pd.read_csv('Be_250mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
+Co = pd.read_csv('Co_5p3mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']); 
+Fe = pd.read_csv('Fe_6p4mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
+filterBacking = pd.read_csv('filterBacking.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
+Kapton = pd.read_csv('Kapton_150mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']); 
+Mo = pd.read_csv('Mo_100mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
+Nb = pd.read_csv('Nb_125mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
+Pd = pd.read_csv('Pd_69mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
+Sn = pd.read_csv('Sn_90mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
+V = pd.read_csv('V_10p8mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']);  
+Zn = pd.read_csv('Zn_4p7mu.txt', delim_whitespace = True, decimal = '.', header=1, usecols=['Energy']); 
 
 #exract values from filters
 Al_foil=Al_foil.values;
@@ -70,9 +66,14 @@ Zn = Zn.values;
 Ttotal = Air*Be*Kapton*filterBacking*Al_foil**Al_layers;
 
 #setup the filter vectors
-filtMat=[Co, Zn, Nb, Mo, Pd, Sn, V, Fe, Co, Zn, Nb, Mo, Pd, Sn, V, Fe, Nb, Mo];  #vector with all filters (counting left to rigth top to bottom
+# filtMat=[Co, Zn, Nb, Mo, Pd, Sn, V, Fe, Co, Zn, Nb, Mo, Pd, Sn, V, Fe, Nb, Mo];  #vector with all filters (counting left to rigth top to bottom
+# filtLeg=['V', 'Fe', 'Co', 'Zn', 'Nb', 'Mo', 'Pd', 'Sn'];   #legend vector, first name here is 1 in index etc..
+# filtMat_ind=np.array([3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 5, 6]);  #indexing to get the rigth legends
+
+filtMat=[V, Fe, Co, Zn, Nb, Mo, Pd, Sn, V, Fe, Co, Zn, Nb, Mo, Pd, Sn];  #vector with all filters (counting left to rigth top to bottom
 filtLeg=['V', 'Fe', 'Co', 'Zn', 'Nb', 'Mo', 'Pd', 'Sn'];   #legend vector, first name here is 1 in index etc..
-filtMat_ind=np.array([3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 5, 6]);  #indexing to get the rigth legends
+filtMat_ind=np.array([1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]);  #indexing to get the rigth legends
+
 
 # %% Ross filter (Theoretical)
 
