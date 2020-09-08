@@ -24,7 +24,7 @@ from XANES2020_code.rossFilterAnalysis.rossSetup  import *
 import numpy as np
 from scipy import interpolate
 from XANES2020_code.rossFilterAnalysis.rossTheoretical import Tth, Ec, QE_data, camResp, Ttotal, E
-
+from scipy.special import kv
 import matplotlib.pyplot as plt
 
 
@@ -164,8 +164,8 @@ def rossMain(raw, plots =False):
      
         
         #plot theoretical and measured values
-        from rossTheoretical import filtMat_ind
-        from rossTheoretical import filtLeg
+        from XANES2020_code.rossFilterAnalysis.rossTheoretical import filtMat_ind
+        from XANES2020_code.rossFilterAnalysis.rossTheoretical import filtLeg
         
         uniFiltMean=np.zeros(len(filtLeg))
         uniTthMean=np.zeros(len(filtLeg))
