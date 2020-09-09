@@ -118,6 +118,11 @@ class ESpec_high_proc():
         """
         img_pC_permm2 = self.espec_data2screen(img_raw)
         return np.sum(img_pC_permm2)*self.screen_dx*self.screen_dy
+    def energy_spectrum(self,img_raw):
+        img_pC_permm2 = self.espec_data2screen(img_raw)
+        spec_pC_per_mm_per_MeV = self.espec_screen2spec(img_pC_permm2)
+        spec_J_per_mm_per_MeV = self.eAxis_MeV*spec_pC_per_mm_per_MeV
+        return spec_J_per_mm_per_MeV
 
     def total_beam_energy(self,img_raw):
         """ Integrates the spectrum to get total beam energy

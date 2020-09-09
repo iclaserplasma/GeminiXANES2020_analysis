@@ -118,12 +118,13 @@ class Betatron_spec_fitter():
 
         total_signal = betatron_signal/null_signal
         return total_signal
+        
     def err_func(self,E_c):
         err = self.theoretical_trans(E_c) - self.measured_trans
         return np.sqrt(np.mean(err**2))
     
     def calc_E_crit(self):   
-        res = minimize(self.err_func,(10))
+        res = minimize(self.err_func,(10),method='Nelder-Mead', tol=1e-4)
         E_c = res.x[0]
         self.trans_pred = self.theoretical_trans(E_c)
         return E_c, self.trans_pred
