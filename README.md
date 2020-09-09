@@ -2,10 +2,11 @@
 Analysis code for the Gemini XANES 2020 experiment
 
 # Installation instructions
-copy paths_template.py to paths.py
-edit so that the variable DATA_FOLDER  points to your MIRAGE data folder which you copy from Box
-in terminal navigate to this directory and type
-pip install .
+1) copy paths_template.py to paths.py
+
+2) edit so that the variable DATA_FOLDER  points to your MIRAGE data folder which you copy from Box
+
+3) in terminal navigate to this directory and type "pip install ."
 
 This should install the package and dependencies
 
