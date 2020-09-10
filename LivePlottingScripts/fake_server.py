@@ -1,9 +1,10 @@
 from PyQt5 import QtWidgets, uic, QtCore
 import mirage_ui
 from mirage_analysis import live_plotting
+from XANES2020_code.paths import DATA_FOLDER
 import pyqtgraph as pg
 import numpy as np
-
+import os
 
 class Ui_fake_server(QtWidgets.QMainWindow):
     """ Object for sending file paths to  easy_plotting 
@@ -36,8 +37,9 @@ class Ui_fake_server(QtWidgets.QMainWindow):
             for n in range(self.diag_list.count()):
                 diag_name = self.diag_list.item(n).text()
                 diag_file_path = '/'.join((diag_name,run_name,'Shot'+shot_str+'.tif'))
-                self.current_run.setText(run_name)
-                self.current_shot.setText(shot_str)
+                if os.path.isfile(os.path.join(DATA_FOLDER,diag_name,run_name,'Shot'+shot_str+'.tif')):
+                    self.current_run.setText(run_name)
+                    self.current_shot.setText(shot_str)
                 print('diag_name', diag_name)
                 print('diag_file_path', diag_file_path)
                 
