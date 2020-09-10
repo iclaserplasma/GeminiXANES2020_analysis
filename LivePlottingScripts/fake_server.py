@@ -1,10 +1,13 @@
 from PyQt5 import QtWidgets, uic, QtCore
 import mirage_ui
 from mirage_analysis import live_plotting
+from mirage_analysis.easy_plotting import _make_path
 from XANES2020_code.paths import DATA_FOLDER
 import pyqtgraph as pg
 import numpy as np
 import os
+
+
 
 class Ui_fake_server(QtWidgets.QMainWindow):
     """ Object for sending file paths to  easy_plotting 
