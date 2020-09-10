@@ -1,0 +1,1 @@
+These scripts are not part of the main code and only work on the RAL PCs for doing live/on demand plotting during the experiment. These files should be copied to a directory on those PCs and run from that directory.

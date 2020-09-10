@@ -40,11 +40,11 @@ def imagesc(I,ax = None,  x=None, y=None, **kwargs):
 
 ### functions for determining which calibration file to use
 
-def choose_cal_file(run_name,shot,diag,file_pref):
+def choose_cal_file(run_name,shot,diag,file_pref,cal_data_path=None):
     run_dt, run_num = get_run_name_info(run_name)
     c_path_sel = None
 
-    cal_paths = get_cal_files(diag=diag,file_pref=file_pref)
+    cal_paths = get_cal_files(diag=diag,file_pref=file_pref,cal_data_path=cal_data_path)
     N_t_path = len(cal_paths)
     for c_path in cal_paths:
         c_path_dt, c_path_run_num, c_path_shot_num =get_cal_path_info(c_path,file_pref=file_pref)
@@ -65,9 +65,11 @@ def choose_cal_file(run_name,shot,diag,file_pref):
                     c_path_sel_info = (c_path_dt,c_path_run_num,c_path_shot_num)
     return c_path_sel
 
-def get_cal_files(diag,file_pref):
+def get_cal_files(diag,file_pref,cal_data_path=None):
+    if cal_data_path is None:
+        cal_data_path = CAL_DATA
     
-    cal_paths =  glob(os.path.join(CAL_DATA,diag,file_pref+'*'))
+    cal_paths =  glob(os.path.join(cal_data_path,diag,file_pref+'*'))
 
     return cal_paths
 

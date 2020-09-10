@@ -130,5 +130,7 @@ dmypy.json
 
 # specific files
 XANES2020_code/paths.py
-
+LivePlottingScripts/mirage_ui
+LivePlottingScripts/mirage_analysis
+LivePlottingScripts/server.pem
 .DS_Store
