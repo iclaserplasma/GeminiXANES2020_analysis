@@ -20,6 +20,7 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         self.send_paths_button.clicked.connect(self.send_paths)
         self.next_shot.clicked.connect(self.show_next_shot)
         self.prev_shot.clicked.connect(self.show_prev_shot)
+        self.set_manual.clicked.connect(self.set_manual_to_displayed)
 
         remote_server = mirage_ui.network.ServerConnection('server.pem')
         remote_server.connect('clftagw02', 5050, '7IGb5SVx3-I')
@@ -57,6 +58,11 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         self.shot_num.setValue(np.clip(v-1,1,None))
         self.send_paths()
     
+    def set_manual_to_displayed(self):
+        self.shot_num.setValue(int(self.current_shot.text()))
+        self.run_name.setText(self.current_run.text())
+        
+        
 
 
 

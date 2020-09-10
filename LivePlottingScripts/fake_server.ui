@@ -288,6 +288,28 @@
     <string>Current diplayed run</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="set_manual">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>340</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(205,255,185);</string>
+   </property>
+   <property name="text">
+    <string>set manual</string>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+  </widget>
   <zorder>groupBox</zorder>
   <zorder>diag_list</zorder>
   <zorder>label_3</zorder>
@@ -296,6 +318,7 @@
   <zorder>current_shot</zorder>
   <zorder>current_run</zorder>
   <zorder>label_4</zorder>
+  <zorder>set_manual</zorder>
  </widget>
  <resources/>
  <connections/>
