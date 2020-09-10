@@ -70,7 +70,7 @@ def rossMain(raw, plots =False):
     counter=0;
     imgMeans=np.zeros( nFilt )
            
-    plt.imshow(raw)       #used during coordinate allocation for new alignments
+    #plt.imshow(raw)       #used during coordinate allocation for new alignments
     for i in range(0,nFilt):        
         # # use to plot rectangles to make sure mean is taken at correct filter positions    
         # rect = plt.Rectangle((x[i],y[i]),w,w,linewidth=1,edgecolor='r',facecolor='none')
