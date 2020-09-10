@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, uic, QtCore
 import mirage_ui
 from mirage_analysis import live_plotting
 import pyqtgraph as pg
+import numpy as np
 
 
 class Ui_fake_server(QtWidgets.QMainWindow):
@@ -13,6 +14,9 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         super(Ui_fake_server, self).__init__() # Call the inherited classes __init__ method
         uic.loadUi('fake_server.ui', self) # Load the .ui file
         self.send_paths_button.clicked.connect(self.send_paths)
+        self.next_shot.clicked.connect(self.show_next_shot)
+        self.prev_shot.clicked.connect(self.show_prev_shot)
+
         remote_server = mirage_ui.network.ServerConnection('server.pem')
         remote_server.connect('clftagw02', 5050, '7IGb5SVx3-I')
         self.relay = Server_relay(remote_server, self)
@@ -22,22 +26,32 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         print('test')
         
         if isinstance(url,str):
-            print(url)
-            self.download_queue_ready.emit(url,0)
+            self.last_URL.setText(url)
+            if self.auto_update.isChecked():
+                self.download_queue_ready.emit(url,0)
         else:
-            print('none')
-            print(url)
+
             run_name = self.run_name.text()
-            burst_str = f'{int(self.burst_num.text()):03}'
+            shot_str = f'{int(self.shot_num.text()):03}'
             for n in range(self.diag_list.count()):
                 diag_name = self.diag_list.item(n).text()
-                diag_file_path = '/'.join((diag_name,run_name,'Shot'+burst_str+'.tif'))
-
-                print('this far')
+                diag_file_path = '/'.join((diag_name,run_name,'Shot'+shot_str+'.tif'))
+                self.current_run.setText(run_name)
+                self.current_shot.setText(shot_str)
                 print('diag_name', diag_name)
                 print('diag_file_path', diag_file_path)
                 
                 self.download_queue_ready.emit(diag_file_path,0)
+
+    def show_next_shot(self):
+        v = self.shot_num.value()
+        self.shot_num.setValue(np.clip(v+1,1,None))
+        self.send_paths()
+    def show_prev_shot(self):
+        v = self.shot_num.value()
+        self.shot_num.setValue(np.clip(v-1,1,None))
+        self.send_paths()
+    
 
 
 

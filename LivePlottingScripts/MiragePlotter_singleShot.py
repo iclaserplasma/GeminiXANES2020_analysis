@@ -51,7 +51,7 @@ server.diag_list.addItem('Lundatron')
 
 
 server.run_name.setText('20200827/run09')
-server.burst_num.setText('1')
+server.shot_num.setValue(1)
 win.show()
 win.raise_()
 # server.connected.connect(win.show)
