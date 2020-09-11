@@ -23,7 +23,9 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         self.set_manual.clicked.connect(self.set_manual_to_displayed)
 
         remote_server = mirage_ui.network.ServerConnection('server.pem')
-        remote_server.connect('clftagw02', 5050, '7IGb5SVx3-I')
+        remote_server.connected.connect(lambda: print('Connected!'))
+        remote_server.connection_error.connect(lambda s: print('Error:', s))
+        remote_server.connect('clftagw02', 5000, '7IGb5SVx3-I')
         self.relay = Server_relay(remote_server, self)
         self.show() # Show the GUI
         
@@ -81,8 +83,5 @@ class Server_relay(pg.ImageView):
 
     def __init__(self, remote_server, local_server):
         super().__init__()
-        data_processor = self.Processor(self, diag_name=None)
-        data_processor.local_server = local_server
-        data_processor.start()
-        remote_server.download_queue_ready.connect(data_processor.new_data)
+        remote_server.download_queue_ready.connect(local_server.download_queue_ready)
 
