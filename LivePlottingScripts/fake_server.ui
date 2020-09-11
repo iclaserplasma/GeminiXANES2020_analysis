@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>422</width>
+    <width>501</width>
     <height>390</height>
    </rect>
   </property>
@@ -51,7 +51,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>411</width>
+     <width>491</width>
      <height>101</height>
     </rect>
    </property>
@@ -99,9 +99,9 @@
    <widget class="QPushButton" name="send_paths_button">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>350</x>
       <y>40</y>
-      <width>61</width>
+      <width>91</width>
       <height>51</height>
      </rect>
     </property>
@@ -168,7 +168,7 @@
    <widget class="QPushButton" name="prev_shot">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>300</x>
       <y>40</y>
       <width>31</width>
       <height>51</height>
@@ -195,7 +195,7 @@
    <widget class="QPushButton" name="next_shot">
     <property name="geometry">
      <rect>
-      <x>380</x>
+      <x>450</x>
       <y>40</y>
       <width>31</width>
       <height>51</height>
@@ -225,7 +225,7 @@
     <rect>
      <x>250</x>
      <y>110</y>
-     <width>151</width>
+     <width>241</width>
      <height>111</height>
     </rect>
    </property>
@@ -272,7 +272,7 @@
      <rect>
       <x>10</x>
       <y>65</y>
-      <width>131</width>
+      <width>211</width>
       <height>41</height>
      </rect>
     </property>
@@ -283,6 +283,9 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
@@ -327,7 +330,7 @@
     <rect>
      <x>250</x>
      <y>260</y>
-     <width>131</width>
+     <width>231</width>
      <height>51</height>
     </rect>
    </property>
@@ -338,6 +341,9 @@
    </property>
    <property name="text">
     <string>None</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label_4">
@@ -361,9 +367,9 @@
   <widget class="QPushButton" name="set_manual">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>340</x>
      <y>340</y>
-     <width>91</width>
+     <width>141</width>
      <height>31</height>
     </rect>
    </property>
