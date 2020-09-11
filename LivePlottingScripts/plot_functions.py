@@ -7,7 +7,7 @@ from XANES2020_code.paths import DATA_FOLDER, CAL_DATA
 from XANES2020_code.Espec import espec_processing 
 from XANES2020_code.general_tools import choose_cal_file
 
-# CAL_DATA = r'\\clftagw02\data\GeminiXANES2020\ProcessedCalibrations'
+CAL_DATA = r'C:\Users\CLFUser\Documents\ProcessedCalibrations'
 
 def xray_andor_image(path):
     return np.array(Image.open(path))  
