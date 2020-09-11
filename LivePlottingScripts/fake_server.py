@@ -3,7 +3,7 @@ import mirage_ui
 from mirage_analysis import live_plotting
 from mirage_analysis.easy_plotting import _make_path
 from XANES2020_code.paths import DATA_FOLDER
-import pyqtgraph as pg
+
 import numpy as np
 import os
 
@@ -26,7 +26,8 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         remote_server.connected.connect(lambda: print('Connected!'))
         remote_server.connection_error.connect(lambda s: print('Error:', s))
         remote_server.connect('clftagw02', 5000, '7IGb5SVx3-I')
-        self.relay = Server_relay(remote_server, self)
+
+        remote_server.download_queue_ready.connect(self.send_paths)
         self.show() # Show the GUI
         
     def send_paths(self,url=None):
@@ -36,6 +37,7 @@ class Ui_fake_server(QtWidgets.QMainWindow):
             self.last_URL.setText(url)
             if self.auto_update.isChecked():
                 self.download_queue_ready.emit(url,0)
+                print(url)
         else:
 
             run_name = self.run_name.text()
@@ -65,23 +67,4 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         self.run_name.setText(self.current_run.text())
         
         
-
-
-
-class Server_relay(pg.ImageView):
-    """Something to take a signal from one server and pass it on through another
-    """
-
-    class Processor(live_plotting.DataProcessor):
-        def process_data(self, url):
-            path = _make_path(self.base_path, url)
-            self.data = url
-            
-
-        def render_data(self):
-            self.local_server.send_paths(self.data)
-
-    def __init__(self, remote_server, local_server):
-        super().__init__()
-        remote_server.download_queue_ready.connect(local_server.download_queue_ready)
 
