@@ -30,11 +30,12 @@ class fRegions(object):
         return xC,yC
     
     def calcTrans(self,imgT,filterMask):
-        [yInd,xInd] = np.where(filterMask==self.label)
-        self.fTrans = np.mean(imgT[yInd,xInd])
-        self.fTrans_rms = np.sqrt(np.mean((self.fTrans-imgT[yInd,xInd])**2))
+        #[yInd,xInd] = np.where(filterMask==self.label)
+        f_sel = filterMask==self.label
+        self.fTrans = np.mean(imgT[f_sel])
+        self.fTrans_rms = np.sqrt(np.mean((self.fTrans-imgT[f_sel])**2))
         # self.fTrans_std_err = self.fTrans_rms/np.sqrt(np.sum(filterMask==self.label))
-        tLabel = np.mean(filterMask[yInd,xInd])
+        tLabel = np.mean(filterMask[f_sel])
         return self.fTrans, self.fTrans_rms, tLabel
 
     def calcT_E(self):
@@ -88,7 +89,7 @@ class Betatron_spec_fitter():
         self.transmission_img = transmission_img
         self.mask_obj = mask_obj
         self._load_info()
-        self.measure_transmission()
+        self.measured_trans = None
 
     def _load_info(self):
         transFuns = self.filter_obj['transmission_functions']
@@ -99,9 +100,36 @@ class Betatron_spec_fitter():
         self.transMat = transFuns[2].T_E
         self.nullTrans = transFuns[1].T_E
 
-    def measure_transmission(self):
+    def measure_transmission(self,method='fit'):
+        if method.lower() in 'quick':
+            Ny,Nx = np.shape(self.transmission_img)
+            X,Y = np.meshgrid(np.arange(Nx),np.arange(Ny))
+            
         for fReg in self.fList:
-            fReg.calcTrans(self.transmission_img,self.mask_obj['filter_number_regions'])
+            if method.lower() in 'quick':
+                reg_labels = np.unique(self.mask_obj['filter_label_regions'][(self.mask_obj['filter_number_regions']==fReg.label)])
+                reg_trans = []
+                reg_trans_rms = []
+                for l in reg_labels:
+                    f_sel = self.mask_obj['filter_label_regions']==l
+                    yInd,xInd = np.where(f_sel)
+                    c_y = np.mean(yInd)
+                    c_x = np.mean(xInd)
+                    R = np.sqrt((Y-c_y)**2+(X-c_x)**2)
+                    R_max = np.min(R[self.mask_obj['beam_mask']>0])*1.5
+                    b_sel = (R<R_max)*(self.mask_obj['beam_mask']>0)
+
+                    reg_b_mean = np.mean(self.transmission_img[b_sel])
+                    reg_b_rms = np.std(self.transmission_img[b_sel])
+                    reg_f_mean = np.mean(self.transmission_img[f_sel])
+                    reg_f_rms = np.std(self.transmission_img[f_sel])
+                    reg_trans.append(reg_f_mean/reg_b_mean)
+                    reg_trans_rms.append(np.sqrt((reg_f_rms/reg_f_mean)**2+(reg_b_rms/reg_b_mean)**2)*reg_f_mean/reg_b_mean)
+
+                fReg.fTrans = np.mean(reg_trans)
+                fReg.fTrans_rms = np.mean(reg_trans_rms)
+            elif method.lower() in 'fit':
+                fReg.calcTrans(self.transmission_img,self.mask_obj['filter_number_regions'])
             fReg.calcTransCumDist()
         self.measured_trans = np.array([x.fTrans for x in self.fList])
         self.measured_trans_rms = np.array([x.fTrans_rms for x in self.fList])
@@ -123,7 +151,8 @@ class Betatron_spec_fitter():
         err = self.theoretical_trans(E_c) - self.measured_trans
         return np.sqrt(np.mean(err**2))
     
-    def calc_E_crit(self):   
+    def calc_E_crit(self,method='fit'):   
+        self.measure_transmission(method=method)
         res = minimize(self.err_func,(10),method='Nelder-Mead', tol=1e-4)
         E_c = res.x[0]
         self.trans_pred = self.theoretical_trans(E_c)

@@ -10,7 +10,7 @@ from sklearn.gaussian_process.kernels import (RBF, Matern, RationalQuadratic,
 from scipy.interpolate import interp1d, interp2d, RectBivariateSpline
 
 from scipy.ndimage import gaussian_filter
-
+from scipy import optimize
 
 class GP_beam_fitter():
     
@@ -74,69 +74,90 @@ class GP_beam_fitter():
         # print(f'Null transmission rms = {null_trans_rms:1.06f}')
 
         return beam_image, beam_unc
+
+def gauss2Dbeam(U,a0,a1,a2,a3,a4,a5):
+    # a0 peak,
+    # a2,a4 widths
+    # a1,a3 centers
+    # a5 angle
+    f = a0*np.exp( -(
+        ( U[:,0]*np.cos(a5)-U[:,1]*np.sin(a5) - a1*np.cos(a5)+a3*np.sin(a5) )**2/(2*a2**2) + 
+        ( U[:,0]*np.sin(a5)+U[:,1]*np.cos(a5) - a1*np.sin(a5)-a3*np.cos(a5) )**2/(2*a4**2) ) )
+
+    return f
+
+def polyBeam(U,a0,a1,a2,a3,a4):
+    R = np.sqrt((U[:,0]-a0)**2 + (U[:,1]-a1)**2)
+    P = (a2,a3,a4)
         
+    N = np.size(P)
+    f = np.zeros(np.shape(R))
+    for n in range(0,N):
+        f = f + P[n]*R**(N-n-1)
 
-# def gauss2Dbeam(U,a0,a1,a2,a3,a4,a5):
-#     # a0 peak,
-#     # a2,a4 widths
-#     # a1,a3 centers
-#     # a5 angle
-#     f = a0*np.exp( -(
-#         ( U[:,0]*np.cos(a5)-U[:,1]*np.sin(a5) - a1*np.cos(a5)+a3*np.sin(a5) )**2/(2*a2**2) + 
-#         ( U[:,0]*np.sin(a5)+U[:,1]*np.cos(a5) - a1*np.sin(a5)-a3*np.cos(a5) )**2/(2*a4**2) ) )
+    return f
 
-#     return f
-# def gauss2DbeamFit(pG,U,I):
+def gauss2DbeamFit(pG,U,I):
     
-#     f = gauss2Dbeam(U,*pG)
-#     fErr = np.sqrt(np.mean((f-I)**2))
-#     return fErr
+    f = gauss2Dbeam(U,*pG)
+    fErr = np.sqrt(np.mean((f-I)**2))
+    return fErr
 
-# def polyBeam(U,a0,a1,a2,a3,a4):
-#     R = np.sqrt((U[:,0]-a0)**2 + (U[:,1]-a1)**2)
-#     P = (a2,a3,a4)
+def setRange2one(x):
+    xMin = np.min(x)
+    xMax = np.max(x)
+    xRange = xMax-xMin
+    x = 2*(x-xMin)/xRange-1
+    return x
+
+class function_beam_fitter():
+    def __init__(self,beam_mask,method = 'polynomial'):
+        beam_mask = beam_mask>0
+        self.method = method
+        self.beam_mask = beam_mask
+        self.Ny, self.Nx  = np.shape(beam_mask)
+        self.x = setRange2one(np.arange(self.Nx))
+        self.y = setRange2one(np.arange(self.Ny))
+        X ,Y = np.meshgrid(self.x,self.y)
+        self.XY_mask = np.array([X[beam_mask],Y[beam_mask]]).T
+        self.XY_full = np.array([X.flatten(),Y.flatten()]).T
         
-#     N = np.size(P)
-#     f = np.zeros(np.shape(R))
-#     for n in range(0,N):
-#         f = f + P[n]*R**(N-n-1)
+    def fit_beam(self,img,down_sel = None,**kwargs):
+        
+        I = img[self.beam_mask]
+        I_mean  = np.mean(I)
+        I = I/I_mean
+        if down_sel is not None:
+            Np = len(I)
+            p_sel = np.random.choice(np.arange(Np),down_sel)
+            XY_mask = self.XY_mask[p_sel,:]
+            I = I[p_sel]
+        else:
+            XY_mask = self.XY_mask
+        
+    
+        if self.method.lower() in 'polynomial':
+            if 'maxfev' not in kwargs:
+                kwargs['maxfev'] = 400
+            if 'xtol' not in kwargs:
+                kwargs['xtol'] = 0.5e-3
+            if 'ftol' not in kwargs:
+                kwargs['ftol'] = 0.1
+            if 'p0' not in kwargs:
+                kwargs['p0'] = (0, 0, -0.1 ,-0.1  ,-0.5)
+            (p_fit,pcov) = optimize.curve_fit(polyBeam, XY_mask, I,
+                    **kwargs)
 
-#     return f
+            I_beam = polyBeam(self.XY_full,*p_fit)*I_mean
+            
+        elif self.method.lower() in 'gaussian':
+            pGuess = (1,0,1,0,1,0)
 
-# def setRange2one(x):
-#     xMin = np.min(x)
-#     xMax = np.max(x)
-#     xRange = xMax-xMin
-#     x = 2*(x-xMin)/xRange-1
-#     return x
+            args = (self.XY_mask,I)
+            z = optimize.minimize(gauss2DbeamFit,pGuess,args=args, tol=0.01,method='Nelder-Mead')
+            p_fit = z.x
+            I_beam = gauss2Dbeam(self.XY_full,*p_fit)*I_mean
 
-# def fitBeam(x,y,img,beamMask,method):
-#     x = setRange2one(x)
-#     y = setRange2one(y)
-#     (Ny,Nx) = np.shape(img)
-#     (X,Y) = np.meshgrid(x,y)
-#     imgMean = np.mean(img)
-#     I = img[beamMask]/imgMean
-#     XY = np.zeros((np.size(I),2))
-#     XY[:,0] = X[beamMask]
-#     XY[:,1] = Y[beamMask]
-#     XYfull = np.zeros((np.size(X),2))
-#     XYfull[:,0] = X.flatten()
-#     XYfull[:,1] = Y.flatten()
-
-#     if method.lower() in 'polynomial':
-#         pGuess = (0, 0, -0.1 ,-0.1  ,-0.5)
-#         (pFit,pcov) = sci.optimize.curve_fit(polyBeam, XY, I,p0=pGuess,ftol=0.1, xtol=0.5e-3, maxfev=400)
-#         Ibeam = polyBeam(XYfull,*pFit)*np.max(img)
-#     elif method.lower() in 'gaussian':
-#         pGuess = (1,0,1,0,1,0)
-#         #(pFit,pcov) = sci.optimize.curve_fit(gauss2Dbeam, XY, I,p0=pGuess)
-#         a = (XY,I)
-#         z = optimize.minimize(gauss2DbeamFit,pGuess,args=a, tol=0.01,method='Nelder-Mead')
-#         pFit = z.x
-#         Ibeam = gauss2Dbeam(XYfull,*pFit)*imgMean
-
-
-
-#     imgBeam = np.reshape(Ibeam,(Nx,Ny),order='C')
-#     return imgBeam, pFit
+        self.img_beam = np.reshape(I_beam,(self.Nx,self.Ny),order='C')
+        self.p_fit = p_fit
+        return self.img_beam
