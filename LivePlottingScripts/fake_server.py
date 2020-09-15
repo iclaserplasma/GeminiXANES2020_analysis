@@ -21,6 +21,7 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         self.next_shot.clicked.connect(self.show_next_shot)
         self.prev_shot.clicked.connect(self.show_prev_shot)
         self.set_manual.clicked.connect(self.set_manual_to_displayed)
+        
 
         remote_server = mirage_ui.network.ServerConnection('server.pem')
         remote_server.connected.connect(lambda: print('Connected!'))
@@ -67,5 +68,5 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         self.shot_num.setValue(int(self.current_shot.text()))
         self.run_name.setText(self.current_run.text())
         
-        
+
 

@@ -15,5 +15,6 @@ setup(name='XANES2020_code',
       zip_safe=False,
       include_package_data=True,
       package_data = {'XANES2020_code':data_files},
-      install_requires=['opencv-python','scipy'],
+      install_requires=['opencv-python','scipy','scikit-learn',
+                        'scikit-image','scikit-optimize','Pillow'],
       )
