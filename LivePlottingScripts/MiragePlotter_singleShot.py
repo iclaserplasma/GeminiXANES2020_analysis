@@ -17,7 +17,7 @@ from fake_server import Ui_fake_server
 from XANES2020_code.paths import DATA_FOLDER
 from plot_functions import Espec_high_proc, xray_andor_image, Gematron_proc
 
-
+from pyqtgraph import PlotDataItem
 ## setup UI
 app = QtCore.QCoreApplication.instance()
 if app is None:
@@ -62,10 +62,20 @@ def get_mean_beam_counts(file_path):
     img_sub = Gematron_proc_obj.get_image(file_path)
     return Gematron_proc_obj.get_beam_mean_counts(img_sub)
 def gematron_image(file_path):
-    return  Gematron_proc_obj.get_image(file_path)
+    return  Gematron_proc_obj.get_image(file_path).T
 win.add_image_plot_with_axes('Gematron', 'Gematron', gematron_image,
         [(0, 0), (2048, 2048)],
         [(0, 0), (2048, 2048)])
+
+for f_rect in Gematron_proc_obj.filter_rects:
+    # self.filter_rects.append([(minc, minr), maxc - minc, maxr - minr])
+            # arguments for overlaying rectangle as below...
+    # rect = mpatches.Rectangle(f_rect[0], f_rect[1], f_rect[2],
+    #                         fill=False, edgecolor='red', linewidth=1, ls='--')
+    minr, minc, maxr, maxc = f_rect
+    xValues = [minc, minc, maxc, maxc, minc]
+    yValues = [minr, maxr, maxr, minr, minr]
+    win.docks['Gematron'].widgets[0].view.addItem(PlotDataItem(xValues, yValues,pen=dict(color='r',dash=[4,4])))
 
 win.add_scalar_history_plot('Gematron E_c', 'Gematron', HistoryShots, get_E_crit)
 

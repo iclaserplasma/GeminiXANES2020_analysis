@@ -54,8 +54,8 @@ class Espec_high_proc:
         # energy markers
         spec_x_mm = eSpec_proc.spec_x_mm.flatten()
         spec_MeV = eSpec_proc.spec_MeV.flatten()
-        x_MeV_cal = interp1d(spec_MeV, spec_x_mm, kind='linear', copy=True, bounds_error=False, fill_value=1e9)
-        E_labels = np.arange(300,1501,100)
+        x_MeV_cal = interp1d(spec_MeV, spec_x_mm, kind='linear', copy=True, bounds_error=False, fill_value=0)
+        E_labels = np.arange(400,1501,100)
         x_labels= x_MeV_cal(E_labels)
         x2p_func = interp1d(self.x_mm, np.arange(0,len(self.x_mm)), kind='linear', copy=True, bounds_error=False, fill_value=0)
 
@@ -109,8 +109,8 @@ class Gematron_proc:
         for region in regionprops(f_labels):
             
             # draw rectangle around segmented coins
-            minr, minc, maxr, maxc = region.bbox
-            self.filter_rects.append([(minc, minr), maxc - minc, maxr - minr])
+            # minr, minc, maxr, maxc = region.bbox
+            self.filter_rects.append(region.bbox)
             # arguments for overlaying rectangle as below...
             # rect = mpatches.Rectangle((minc, minr), maxc - minc, maxr - minr,
             #                         fill=False, edgecolor='red', linewidth=1, ls='--')
