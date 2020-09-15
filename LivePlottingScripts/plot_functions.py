@@ -10,7 +10,7 @@ from XANES2020_code.Betatron_analysis.beam_fitting import function_beam_fitter
 from XANES2020_code.Betatron_analysis import xray_analysis as xray
 from skimage.measure import label, regionprops
 
-CAL_DATA = r'C:\Users\CLFUser\Documents\ProcessedCalibrations'
+#CAL_DATA = r'C:\Users\CLFUser\Documents\ProcessedCalibrations'
 
 def xray_andor_image(path):
     return np.array(Image.open(path))  
