@@ -28,6 +28,7 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         remote_server.connect('clftagw02', 5000, '7IGb5SVx3-I')
 
         remote_server.download_queue_ready.connect(self.send_paths)
+        remote_server.setParent(self)
         self.show() # Show the GUI
         
     def send_paths(self,url=None):
