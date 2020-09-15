@@ -17,6 +17,7 @@ from . import live_plotting
 import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.dockarea import DockArea, Dock
+from XANES2020_code.general_tools import save_object, load_object
 
 URL_REGEX = re.compile(r'\w+://')
 
@@ -121,11 +122,13 @@ class DockView(DockArea):
     Can be treated as a pyqtgraph DockArea, or you can use the add_ convenience
     functions.
     """
-
+    dock_arrangement_file = 'dock_state.pkl'
     def __init__(self, server, base_path):
         super().__init__()
+        server.save_view.clicked.connect(self.save_dock_arrangement)
         self.server = server
         self.base_path = base_path
+        
 
     def add_scalar_history_plot(self, dock_name, diag_name, history, func):
         dock = Dock(dock_name, size=(400, 400))
@@ -147,3 +150,15 @@ class DockView(DockArea):
         self.addDock(dock)
         dock.addWidget(ImagePlot(self.server, diag_name, self.base_path, func,
             x_axis=x_axis, y_axis=y_axis))
+
+    def save_dock_arrangement(self):
+        dock_state = self.saveState()
+        save_object(dock_state,self.dock_arrangement_file)
+
+    def load_dock_arrangement(self):
+        if os.path.isfile(self.dock_arrangement_file):
+            dock_state = load_object(self.dock_arrangement_file)
+            self.restoreState(dock_state)
+
+
+

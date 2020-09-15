@@ -8,14 +8,14 @@ from scipy.interpolate import interp1d
 from PIL import Image
 # Stephens code
 import mirage_ui
-from mirage_analysis import easy_plotting
+from XANES2020_code.mirage_analysis import easy_plotting
 
 # UI
 from fake_server import Ui_fake_server
 
 # experiment code
 from XANES2020_code.paths import DATA_FOLDER
-from plot_functions import Espec_high_proc, xray_andor_image, Gematron_proc
+from plot_functions import Espec_high_proc, pil_img_array, Gematron_proc
 
 from pyqtgraph import PlotDataItem
 ## setup UI
@@ -43,7 +43,7 @@ win.add_scalar_history_plot('Espec high counts', 'Espec_high', HistoryShots, Esp
 server.diag_list.addItem('Espec_high')
 
 ## Lundatron plot
-win.add_image_plot_with_axes('Lundatron', 'Lundatron', xray_andor_image,
+win.add_image_plot_with_axes('Lundatron', 'Lundatron', pil_img_array,
         [(0, 0), (2048, 2048)],
         [(0, 0), (2048, 2048)])
 server.diag_list.addItem('Lundatron')
@@ -84,10 +84,26 @@ win.add_scalar_history_plot('Gematron photons', 'Gematron', HistoryShots, get_be
 win.add_scalar_history_plot('Gematron mean counts', 'Gematron', HistoryShots, get_mean_beam_counts)
 server.diag_list.addItem('Gematron')
 
+## dx420 plots
+
+def dx420_img(file_path):
+    print(file_path)
+    return pil_img_array(file_path).T
+
+def dx420_mean_x(file_path):
+    img = dx420_img(file_path)
+    return np.mean(img,axis=1)
+
+andor_diag_list = ['Si','TAP','HOPG']
+for diag in andor_diag_list:
+    win.add_image_plot(diag, diag, dx420_img)
+    win.add_line_plot(diag+' lineout', diag, dx420_mean_x)
+    server.diag_list.addItem(diag)
 
 
-server.run_name.setText('20200907/run04')
-server.shot_num.setValue(1)
+server.run_name.setText('20200915/run01')
+server.shot_num.setValue(5)
+win.load_dock_arrangement()
 win.show()
 win.raise_()
 # server.connected.connect(win.show)
