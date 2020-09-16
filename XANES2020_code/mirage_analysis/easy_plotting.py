@@ -41,7 +41,10 @@ class ScalarHistoryPlot(live_plotting.SimpleLineGraph):
 
     def process_data(self, url):
         path = _make_path(self.base_path, url)
-        return self.user_process_data(path)
+        if os.path.isfile(path):
+            return self.user_process_data(path)
+        else:
+            return None
 
 class LinePlot(pg.GraphicsLayoutWidget):
     """A plot showing a 1D array.
@@ -54,14 +57,21 @@ class LinePlot(pg.GraphicsLayoutWidget):
     class Processor(live_plotting.DataProcessor):
         def process_data(self, url):
             path = _make_path(self.base_path, url)
-            data = self.user_process_data(path)
-            if isinstance(data, tuple):
-                x_data, y_data = data
+            if os.path.isfile(path):
+                data = self.user_process_data(path)
+            
+                if isinstance(data, tuple):
+                    x_data, y_data = data
+                else:
+                    y_data = data
+                    x_data = np.arange(len(y_data))
+                self.x_data = x_data
+                self.y_data = y_data
             else:
-                y_data = data
-                x_data = np.arange(len(y_data))
-            self.x_data = x_data
-            self.y_data = y_data
+                if hasattr(self, 'y_data'):
+                    self.y_data = self.y_data*0
+
+                
 
         def render_data(self):
             self.curve.setData(self.x_data, self.y_data)
@@ -91,8 +101,13 @@ class ImagePlot(pg.ImageView):
 
     class Processor(live_plotting.DataProcessor):
         def process_data(self, url):
+            
             path = _make_path(self.base_path, url)
-            self.data = self.user_process_data(path)
+            if os.path.isfile(path):
+                self.data = self.user_process_data(path)
+            else:
+                if hasattr(self, 'data'):
+                    self.data = self.data*0
 
         def render_data(self):
             self.img_view.setImage(self.data, autoRange=False, autoLevels=False, autoHistogramRange=False)

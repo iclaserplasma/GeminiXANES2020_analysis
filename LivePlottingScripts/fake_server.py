@@ -21,8 +21,11 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         self.next_shot.clicked.connect(self.show_next_shot)
         self.prev_shot.clicked.connect(self.show_prev_shot)
         self.set_manual.clicked.connect(self.set_manual_to_displayed)
-        
+        self.connect_server()
 
+        self.show() # Show the GUI
+        
+    def connect_server(self):
         remote_server = mirage_ui.network.ServerConnection('server.pem')
         remote_server.connected.connect(lambda: print('Connected!'))
         remote_server.connection_error.connect(lambda s: print('Error:', s))
@@ -30,16 +33,15 @@ class Ui_fake_server(QtWidgets.QMainWindow):
 
         remote_server.download_queue_ready.connect(self.send_paths)
         remote_server.setParent(self)
-        self.show() # Show the GUI
-        
+
     def send_paths(self,url=None):
-        print('test')
+
         
         if isinstance(url,str):
             self.last_URL.setText(url)
             if self.auto_update.isChecked():
                 self.download_queue_ready.emit(url,0)
-                print(url)
+ 
         else:
 
             run_name = self.run_name.text()
@@ -50,10 +52,9 @@ class Ui_fake_server(QtWidgets.QMainWindow):
                 if os.path.isfile(os.path.join(DATA_FOLDER,diag_name,run_name,'Shot'+shot_str+'.tif')):
                     self.current_run.setText(run_name)
                     self.current_shot.setText(shot_str)
-                print('diag_name', diag_name)
-                print('diag_file_path', diag_file_path)
                 
                 self.download_queue_ready.emit(diag_file_path,0)
+        self.connect_server()
 
     def show_next_shot(self):
         v = self.shot_num.value()

@@ -163,9 +163,8 @@ class Gematron_proc:
 
         img_sub = self.get_image(file_path)
         img_sub = self.remove_filter_signal(img_sub)
-        print(np.mean(img_sub))
         if np.mean(img_sub)<mean_counts_thesh:
-            print('Image signal below threshold')
+            print('Gematron image signal below threshold for retrieval')
             return 0,0
 
         img_transmission = self.get_transmission(img_sub)

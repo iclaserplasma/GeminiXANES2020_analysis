@@ -87,7 +87,6 @@ server.diag_list.addItem('Gematron')
 ## dx420 plots
 
 def dx420_img(file_path):
-    print(file_path)
     return pil_img_array(file_path).T
 
 def dx420_mean_x(file_path):
