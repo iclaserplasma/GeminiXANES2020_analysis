@@ -87,9 +87,6 @@ server.diag_list.addItem('Gematron')
 ## dx420 plots
 
 def dx420_img(file_path):
-<<<<<<< Updated upstream
-    return pil_img_array(file_path).T
-=======
     print(file_path)
     try:
         im = pil_img_array(file_path).T
@@ -99,7 +96,6 @@ def dx420_img(file_path):
         im[:] = np.nan
         
     return im
->>>>>>> Stashed changes
 
 def dx420_mean_x(file_path):
     img = dx420_img(file_path)
