@@ -192,4 +192,81 @@ class Gematron_proc:
         beam_N = np.sum(img_beam_N)
         return E_c, beam_N
 
+class crystal_spec_proc:
+    def __init__(self,run_name,shot_num=1,crystal=None,img_bkg=None):
+        self.run_name = run_name
+        self.shot_num = shot_num
+        self.img_bkg = img_bkg
+        self.crystal = crystal
+
+        self.spectral_markers = {'Si': 3350.0, 'TAP': 1560.0, 'HOPG': 3350.0} #eV
+        self.d2s = {'Si': 6.271, 'TAP': 25.763, 'HOPG': 6.708} #angstroms
+
+        self.setup_proc(run_name=run_name,shot_num=shot_num,crystal=crystal,img_bkg=img_bkg)
         
+
+    def setup_proc(self,run_name=None,shot_num=None,crystal=None,img_bkg=None):
+        if run_name is None:
+            run_name = self.run_name
+        if shot_num is None:
+            shot_num = self.shot_num
+        if img_bkg is None:
+            img_bkg = self.img_bkg
+
+        if self.crystal is None or str(self.crystal) not in self.spectral_markers.keys():
+            #add flag here to ignore all funcs to get energy axis
+            pass
+        else:
+            #get filepaths of processing info
+            
+            #where is spectral filter shadow on image for energy axis retrieval
+            spectral_region_filepath = choose_cal_file(run_name,shot_num, crystal,
+                            crystal + '_spectral_region', cal_data_path=CAL_DATA)
+
+            #where is background region on image for bkg subtraction
+            bkg_region_filepath = choose_cal_file(run_name,shot_num, crystal,
+                            crystal + '_bkg_region', cal_data_path=CAL_DATA)
+
+            #positions in chamber for calculating angles
+            setup_filepath = choose_cal_file(run_name,shot_num, crystal,
+                            crystal + '_setup', cal_data_path=CAL_DATA)
+            
+            #process 
+        return None    
+
+    def get_image(self,file_path):
+        img = np.array(Image.open(file_path)).astype(float)
+        if self.img_bkg is not None:
+            img = img - self.img_bkg
+        return img
+
+    def get_energy_axis(self,file_path):
+        #find cut in spectral region
+        xtal = np.array(Image.open(file_path)).astype(float)
+        bounds = self.spectral_region
+        xtal_spectral_region = xtal[bounds]
+        offset = bounds[0] #which index here?
+        
+        spectral_region_lineout = np.mean(xtal_spectral_region, axis=0)
+        cut_loc = self.step_finder(spectral_region_lineout) + offset
+
+        #convert position on chip to energy
+        
+
+        #offset energy axis at energy of spectral marker to match position of cut in image
+        
+        
+        return None
+
+    def step_finder(self, array):
+        """Simplestep-finder of 1d array by convolving with the signal
+        you're looking for.
+        """
+        dary = np.copy(array)
+        dary -= np.mean(dary)
+        example_step = np.hstack((np.ones(len(dary)), -1.0*np.ones(len(dary) )))
+        dary_conv_step = np.convolve(dary, example_step, mode='valid')
+        step_idx = np.argmin(dary_conv_step)
+        return step_idx
+                                 
+    
