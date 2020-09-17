@@ -14,7 +14,8 @@ import pandas as pd
 import os
 from scipy.special import kv
 from pathlib import Path
-rossPath = Path(os.path.dirname(os.path.realpath(__file__)))
+from XANES2020_code import PKG_DATA
+rossPath = Path(PKG_DATA) / 'rossFilterAnalysis'
 
 
 
