@@ -86,49 +86,34 @@ server.diag_list.addItem('Gematron')
 
 ## dx420 plots
 
-def dx420_img(file_path):
+def basic_image(file_path):
     print(file_path)
-    try:
-        im = pil_img_array(file_path).T
-    except(FileNotFoundError):
-        print('No file found for ' + file_path)
-        im = np.empty((1024, 256))
-        im[:] = np.nan
-        
+    im = pil_img_array(file_path).T
     return im
 
 def dx420_mean_x(file_path):
-    img = dx420_img(file_path)
+    img = basic_image(file_path)
     return np.mean(img,axis=1)
 
 def dx420_mean_y(file_path):
-    img = dx420_img(file_path)
+    img = basic_image(file_path)
     return np.mean(img,axis=0)
 
 andor_diag_list = ['Si','TAP','HOPG']
 for diag in andor_diag_list:
-    win.add_image_plot(diag, diag, dx420_img)
+    win.add_image_plot(diag, diag, basic_image)
     win.add_line_plot(diag+' lineout', diag, dx420_mean_x)
     server.diag_list.addItem(diag)
 
-win.add_image_plot('Pinhole', 'Pinhole', dx420_img)
+win.add_image_plot('Pinhole', 'Pinhole', basic_image)
 win.add_line_plot('Pinhole'+' x lineout', 'Pinhole', dx420_mean_x)
 win.add_line_plot('Pinhole'+' y lineout', 'Pinhole', dx420_mean_y)
 server.diag_list.addItem('Pinhole')
 
-def gigE_img(file_path):
-    print(file_path)
-    try:
-        im = pil_img_array(file_path).T
-    except(FileNotFoundError):
-        print('No file found for ' + file_path)
-        im = np.empty((492, 656))
-        im[:] = np.nan
-    return im
 
 gigE_diag_list = ['TopView', 'Crystal', 'F40focus', 'LMS', 'HMS', 'LMI']
 for diag in gigE_diag_list:
-    win.add_image_plot(diag, diag, gigE_img)
+    win.add_image_plot(diag, diag, basic_image)
     server.diag_list.addItem(diag) 
 
 
