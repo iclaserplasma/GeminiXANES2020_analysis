@@ -137,9 +137,10 @@ class DockView(DockArea):
     Can be treated as a pyqtgraph DockArea, or you can use the add_ convenience
     functions.
     """
-    dock_arrangement_file = 'dock_state.pkl'
+    
     def __init__(self, server, base_path):
         super().__init__()
+        self.dock_arrangement_file = 'dock_state.pkl'
         server.save_view.clicked.connect(self.save_dock_arrangement)
         self.server = server
         self.base_path = base_path
