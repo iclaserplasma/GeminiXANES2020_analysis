@@ -3,7 +3,7 @@ import mirage_ui
 from mirage_analysis import live_plotting
 from mirage_analysis.easy_plotting import _make_path
 from XANES2020_code.paths import DATA_FOLDER
-
+from glob import glob
 import numpy as np
 import os
 
@@ -48,8 +48,15 @@ class Ui_fake_server(QtWidgets.QMainWindow):
             shot_str = f'{int(self.shot_num.text()):03}'
             for n in range(self.diag_list.count()):
                 diag_name = self.diag_list.item(n).text()
-                diag_file_path = '/'.join((diag_name,run_name,'Shot'+shot_str+'.tif'))
-                if os.path.isfile(os.path.join(DATA_FOLDER,diag_name,run_name,'Shot'+shot_str+'.tif')):
+                diag_file_path_stem = os.path.join(DATA_FOLDER,diag_name,run_name,'Shot'+shot_str+'.*')
+                file_matches = glob(diag_file_path_stem)
+                if len(file_matches)>0:
+                    diag_ext = os.path.splitext(file_matches[0])[1]
+                else:
+                    diag_ext = ''
+                diag_file_path = '/'.join((diag_name,run_name,'Shot'+shot_str+diag_ext))
+                
+                if os.path.isfile(os.path.join(DATA_FOLDER,diag_name,run_name,'Shot'+shot_str+diag_ext)):
                     self.current_run.setText(run_name)
                     self.current_shot.setText(shot_str)
                 
