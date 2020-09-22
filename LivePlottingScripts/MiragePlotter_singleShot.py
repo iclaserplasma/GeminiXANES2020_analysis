@@ -116,6 +116,20 @@ win.add_line_plot('Pinhole'+' x lineout', 'Pinhole', dx420_mean_x)
 win.add_line_plot('Pinhole'+' y lineout', 'Pinhole', dx420_mean_y)
 server.diag_list.addItem('Pinhole')
 
+def gigE_img(file_path):
+    print(file_path)
+    try:
+        im = pil_img_array(file_path).T
+    except(FileNotFoundError):
+        print('No file found for ' + file_path)
+        im = np.empty((492, 656))
+        im[:] = np.nan
+    return im
+
+gigE_diag_list = ['TopView', 'Crystal', 'F40focus', 'LMS', 'HMS', 'LMI']
+for diag in gigE_diag_list:
+    win.add_image_plot(diag, diag, gigE_img)
+    server.diag_list.addItem(diag) 
 
 
 server.run_name.setText('20200915/run01')
