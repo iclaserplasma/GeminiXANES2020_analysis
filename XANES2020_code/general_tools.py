@@ -108,8 +108,11 @@ def is_arg1_geq_arg2(dt_shot_run_tup1,dt_shot_run_tup2):
     
     return answer
 
-def calc_COW(img,X,Y,img_thresh=0.5):
+def calc_COW(img,X=None,Y=None,img_thresh=0.5):
     iSel = img>img_thresh
+    if (X is None) or (Y is None):
+        Ny,Nx = np.shape(img)
+        X,Y = np.meshgrid(np.arange(Nx),np.arange(Ny))
     c_x = np.sum(X[iSel]*img[iSel])/np.sum(img[iSel])
     c_y = np.sum(Y[iSel]*img[iSel])/np.sum(img[iSel])
     return c_x,c_y
