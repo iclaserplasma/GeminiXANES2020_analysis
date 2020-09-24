@@ -107,3 +107,9 @@ def is_arg1_geq_arg2(dt_shot_run_tup1,dt_shot_run_tup2):
         answer = False
     
     return answer
+
+def calc_COW(img,X,Y,img_thresh=0.5):
+    iSel = img>img_thresh
+    c_x = np.sum(X[iSel]*img[iSel])/np.sum(img[iSel])
+    c_y = np.sum(Y[iSel]*img[iSel])/np.sum(img[iSel])
+    return c_x,c_y
