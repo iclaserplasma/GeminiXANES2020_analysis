@@ -61,7 +61,7 @@ class Ui_fake_server(QtWidgets.QMainWindow):
                     self.current_shot.setText(shot_str)
                 
                 self.download_queue_ready.emit(diag_file_path,0)
-        self.connect_server()
+        # self.connect_server()
 
     def show_next_shot(self):
         v = self.shot_num.value()
