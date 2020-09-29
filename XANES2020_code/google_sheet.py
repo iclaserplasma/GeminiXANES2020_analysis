@@ -60,7 +60,7 @@ class google_sheet_retrieval:
                         prev_row[key] = row[key]
 
     def get_run(self,run_name):
-        run_name = '20200907/run04'
+
         run_dt = datetime.strptime(run_name[:8],'%Y%m%d')
         run_date = run_dt.strftime('%d/').lstrip('0')+run_dt.strftime('%m/').lstrip('0')+run_dt.strftime('%Y')
         run_run = int(run_name[12:])
