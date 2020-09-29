@@ -29,9 +29,10 @@ class Ui_fake_server(QtWidgets.QMainWindow):
         remote_server = mirage_ui.network.ServerConnection('server.pem')
         remote_server.connected.connect(lambda: print('Connected!'))
         remote_server.connection_error.connect(lambda s: print('Error:', s))
-        remote_server.connect('clftagw02', 5000, '7IGb5SVx3-I')
-
+        # remote_server.connect('clftagw02', 5000, '7IGb5SVx3-I')
+        remote_server.auto_connect('clftagw02', 5000, '7IGb5SVx3-I',1)
         remote_server.download_queue_ready.connect(self.send_paths)
+
         remote_server.setParent(self)
 
     def send_paths(self,url=None):
@@ -61,7 +62,6 @@ class Ui_fake_server(QtWidgets.QMainWindow):
                     self.current_shot.setText(shot_str)
                 
                 self.download_queue_ready.emit(diag_file_path,0)
-        self.connect_server()
 
     def show_next_shot(self):
         v = self.shot_num.value()
