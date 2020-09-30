@@ -67,15 +67,15 @@ win.add_line_plot('Pinhole'+' y lineout', 'Pinhole', dx420_mean_y)
 server.diag_list.addItem('Pinhole')
 
 # --------- HAPG
-beam_run_name = r'20200929/run28'
+
 diag = 'HAPG'
-file_stem = str(Path(DATA_FOLDER) / diag / beam_run_name / 'Shot*' )
-beam_file_list = glob(file_stem)
+beam_run_name = r'20200929/run28'
 cal_file_pref = 'HAPG_cal'
 HAPG_cal_file_path = choose_cal_file(beam_run_name,1,diag,cal_file_pref)
 HAPG_proc = HAPG_processor(HAPG_cal_file_path=HAPG_cal_file_path)
 if HAPG_proc.beam_ref is None:
-    
+    file_stem = str(Path(DATA_FOLDER) / diag / beam_run_name / 'Shot*' )
+    beam_file_list = glob(file_stem)
     beam_ref,beam_ref_rms = HAPG_proc.get_beam_ref(beam_file_list)
     cal_info = load_object(HAPG_cal_file_path)
     cal_info['beam_ref'] = beam_ref
@@ -92,7 +92,9 @@ def get_HAPG_xafs(file_path):
     iSel= (x>8950)*(x<9050)
     return xafs[iSel]
 
+
 win.add_line_plot(diag + 'XAFS', diag, get_HAPG_xafs)
+win.add_image_plot(diag, diag, dx420_img)
 server.diag_list.addItem(diag)
 
 server.run_name.setText('20200915/run01')
