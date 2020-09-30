@@ -6,6 +6,8 @@ from datetime import datetime
 import numpy as np
 from scipy.interpolate import interp1d
 from PIL import Image
+from pathlib import Path
+from glob import glob
 # Stephens code
 import mirage_ui
 from XANES2020_code.mirage_analysis import easy_plotting
@@ -14,8 +16,10 @@ from XANES2020_code.mirage_analysis import easy_plotting
 from fake_server import Ui_fake_server
 
 # experiment code
-from XANES2020_code.paths import DATA_FOLDER
+from XANES2020_code.paths import DATA_FOLDER, CAL_DATA
+from XANES2020_code.general_tools import load_object, save_object, choose_cal_file
 from plot_functions import Espec_high_proc, pil_img_array, Gematron_proc
+from XANES2020_code.HAPG.HAPG_analysis import HAPG_processor
 
 from pyqtgraph import PlotDataItem
 ## setup UI
@@ -82,14 +86,14 @@ if HAPG_proc.beam_ref is None:
                     beam_run_name.split(r'/')[1] + f'_shot{len(beam_file_list):03}.pkl'))
     save_object(cal_info,new_cal_path)
 
-def get_HAPG_xafs(file_path)
-    xafs = HAPG_proc.HAPG_file2trans(file_path)
+def get_HAPG_xafs(file_path):
+    xafs = HAPG_proc.HAPG_file2xafs(file_path)
     x = HAPG_proc.spec_eV
     iSel= (x>8950)*(x<9050)
-    return xafs
+    return xafs[iSel]
 
-win.add_line_plot(diag, diag, HAPG_proc.get_HAPG_xafs)
-
+win.add_line_plot(diag + 'XAFS', diag, get_HAPG_xafs)
+server.diag_list.addItem(diag)
 
 server.run_name.setText('20200915/run01')
 server.shot_num.setValue(5)

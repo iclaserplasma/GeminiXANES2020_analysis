@@ -105,7 +105,7 @@ class HAPG_processor:
         return xafs
     
 
-    def HAPG_file2trans(self,file_path):
+    def HAPG_file2xafs(self,file_path):
         data = self.HAPG_file2data(file_path)
         spec_y = self.get_spec_y(data)
         self.trans = self.spec2trans(spec_y)
