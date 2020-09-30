@@ -36,6 +36,8 @@ class HAPG_processor:
         self.sub_median = True
         self.sigma_x = 1
 
+        self.beam_ref = None
+
     def load_cal_info(self):
         cal_info = load_object(self.HAPG_cal_file_path)
         # self.pxsize=cal_info['pxsize']
@@ -43,6 +45,11 @@ class HAPG_processor:
         # self.x_offset=cal_info['x_offset']
         self.spec_eV = cal_info['spec_eV']
         self.iSel = cal_info['iSel']
+        if 'sig_mask' in cal_info.keys():
+            self.sig_mask = cal_info['sig_mask']
+        if 'beam_ref' in cal_info.keys():
+            self.beam_ref = cal_info['beam_ref']
+            self.beam_ref_rms = cal_info['beam_ref_rms']
         return cal_info
 
     def HAPG_file2data(self,file_path):
