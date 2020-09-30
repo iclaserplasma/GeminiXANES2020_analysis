@@ -25,3 +25,4 @@ def configure(base_path):
 register_data_loader('Espec_high', ImageDataLoader)
 register_data_loader('Lundatron', LundatronLoader)
 register_data_loader('Gematron', LundatronLoader)
+register_data_loader('HAPG', ImageDataLoader)
