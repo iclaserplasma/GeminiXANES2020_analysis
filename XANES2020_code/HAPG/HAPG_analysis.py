@@ -29,7 +29,7 @@ def normalise(y):
 class HAPG_processor:
     def __init__(self,HAPG_cal_file_path,img_bkg=0):
         self.HAPG_cal_file_path = HAPG_cal_file_path
-        self.load_cal_info()
+        
         self.img_bkg = img_bkg 
         self.data = None
         self.sig_width = 150
@@ -39,6 +39,7 @@ class HAPG_processor:
         self.sig_mask = None
 
         self.beam_ref = None
+        self.load_cal_info()
 
     def load_cal_info(self):
         cal_info = load_object(self.HAPG_cal_file_path)
@@ -98,7 +99,7 @@ class HAPG_processor:
         spec_y_norm = spec_y/y_max
 
         def err_fcn(A):
-            return np.sqrt(np.sum((A*spec_y_norm[self.iSel]-self.beam_ref[self.iSel])**2))
+            return np.sqrt(np.sum((A*spec_y_norm[self.spec_iSel]-self.beam_ref[self.spec_iSel])**2))
 
         res = minimize(err_fcn,x0=1)
         spec_y_norm = spec_y_norm*res.x[0]
