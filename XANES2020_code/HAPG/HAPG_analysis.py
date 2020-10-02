@@ -50,6 +50,7 @@ class HAPG_processor:
         self.material_rho = cal_info['material_rho'] # Cu 8.96 #g/cm^3
         self.material_thickness =  cal_info['material_thickness'] # 0.4  #cm
         self.spec_iSel = cal_info['spec_iSel']
+        self.full_trans_iSel = cal_info['full_trans_iSel']
         if 'sig_mask' in cal_info.keys():
             self.sig_mask = cal_info['sig_mask']
             self.y = cal_info['y']
@@ -99,7 +100,7 @@ class HAPG_processor:
         spec_y_norm = spec_y/y_max
 
         def err_fcn(A):
-            return np.sqrt(np.sum((A*spec_y_norm[self.spec_iSel]-self.beam_ref[self.spec_iSel])**2))
+            return np.sqrt(np.sum((A*spec_y_norm[self.full_trans_iSel]-self.beam_ref[self.full_trans_iSel])**2))
 
         res = minimize(err_fcn,x0=1)
         spec_y_norm = spec_y_norm*res.x[0]
