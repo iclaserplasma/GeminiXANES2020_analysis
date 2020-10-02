@@ -44,7 +44,6 @@ class HAPG_processor:
         # self.dispersion=cal_info['dispersion']
         # self.x_offset=cal_info['x_offset']
         self.spec_eV = cal_info['spec_eV']
-        self.iSel = cal_info['iSel']
         self.material_rho = cal_info['material_rho'] # Cu 8.96 #g/cm^3
         self.material_thickness =  cal_info['material_thickness'] # 0.4  #cm
         self.spec_iSel = cal_info['spec_iSel']
