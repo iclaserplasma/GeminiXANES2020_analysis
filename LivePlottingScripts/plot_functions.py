@@ -281,7 +281,7 @@ class HAPG_live_plotter():
     diag = 'HAPG'
     def __init__(self,beam_run_name):
         self.beam_run_name = beam_run_name
-        self.HAPG_cal_file_path = choose_cal_file(self.beam_run_name,1,self.diag,self.cal_file_pref)
+        self.HAPG_cal_file_path = choose_cal_file(self.beam_run_name,999,self.diag,self.cal_file_pref)
         self.HAPG_proc = HAPG_processor(HAPG_cal_file_path=self.HAPG_cal_file_path)
 
         if self.HAPG_proc.beam_ref is None:

@@ -35,6 +35,8 @@ class HAPG_processor:
         self.sig_width = 150
         self.sub_median = True
         self.sigma_x = 1
+        self.y = None
+        self.sig_mask = None
 
         self.beam_ref = None
 
@@ -49,6 +51,7 @@ class HAPG_processor:
         self.spec_iSel = cal_info['spec_iSel']
         if 'sig_mask' in cal_info.keys():
             self.sig_mask = cal_info['sig_mask']
+            self.y = cal_info['y']
         if 'beam_ref' in cal_info.keys():
             self.beam_ref = cal_info['beam_ref']
             self.beam_ref_rms = cal_info['beam_ref_rms']

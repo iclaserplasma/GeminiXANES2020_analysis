@@ -152,6 +152,8 @@ for diag in gigE_diag_list:
 
 
 
+server.run_name.setText('20200929/run27')
+server.shot_num.setValue(1)
 
 win.load_dock_arrangement()
 win.show()
