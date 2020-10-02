@@ -9,7 +9,7 @@ from skimage.measure import label, regionprops
 
 from XANES2020_code.paths import DATA_FOLDER, CAL_DATA
 from XANES2020_code.Espec import espec_processing 
-from XANES2020_code.general_tools import choose_cal_file, load_object
+from XANES2020_code.general_tools import choose_cal_file, load_object, save_object
 from XANES2020_code.Betatron_analysis.beam_fitting import function_beam_fitter
 from XANES2020_code.Betatron_analysis import xray_analysis as xray
 from XANES2020_code.HAPG.HAPG_analysis import HAPG_processor
@@ -302,7 +302,7 @@ class HAPG_live_plotter():
         self.x = self.HAPG_proc.spec_eV[self.HAPG_proc.spec_iSel]
 
 
-    def get_HAPG_norm_abs(file_path):
+    def get_HAPG_norm_abs(self,file_path):
         norm_abs = self.HAPG_proc.HAPG_file2norm_abs(file_path)
 
         return norm_abs[self.HAPG_proc.spec_iSel]

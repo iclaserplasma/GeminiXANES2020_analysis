@@ -138,13 +138,11 @@ beam_run_name = r'20200929/run28'
 HAPG_plot = HAPG_live_plotter(beam_run_name)
 
 win.add_line_plot(diag + ' absorption', diag, HAPG_plot.get_HAPG_norm_abs)
+win.add_line_plot(diag + 'XAFS', diag, HAPG_plot.get_HAPG_norm_abs)
 win.add_image_plot(diag, diag, dx420_img)
 server.diag_list.addItem(diag)
 
-<<<<<<< Updated upstream
-server.run_name.setText('20200929/run01')
-server.shot_num.setValue(1)
-=======
+
 #----------- GigE's
 
 gigE_diag_list = ['TopView', 'F40focus', 'LMS']
@@ -154,9 +152,7 @@ for diag in gigE_diag_list:
 
 
 
-server.run_name.setText('20200915/run01')
-server.shot_num.setValue(5)
->>>>>>> Stashed changes
+
 win.load_dock_arrangement()
 win.show()
 win.raise_()
