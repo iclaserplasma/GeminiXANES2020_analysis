@@ -1,5 +1,6 @@
 import sys, os, pickle, time
 import numpy as np
+import pandas as pd
 from scipy.interpolate import interp1d
 from skimage.io import imread
 from PIL import Image
@@ -13,7 +14,7 @@ from XANES2020_code.general_tools import choose_cal_file, load_object, save_obje
 from XANES2020_code.Betatron_analysis.beam_fitting import function_beam_fitter
 from XANES2020_code.Betatron_analysis import xray_analysis as xray
 from XANES2020_code.HAPG.HAPG_analysis import HAPG_processor
-
+from XANES2020_code import PKG_DATA
 
 # CAL_DATA = r'C:\Users\CLFUser\Documents\ProcessedCalibrations'
 
@@ -301,8 +302,14 @@ class HAPG_live_plotter():
 
         self.x = self.HAPG_proc.spec_eV[self.HAPG_proc.spec_iSel]
 
+    def get_theoretical_data(self):
+        df = pd.read_csv(Path(PKG_DATA) / 'HAPG' / 'Rehr_Fig4_XAFS.txt',header=None)
+        rehr=(df[1]/12-0.05 )*1.2
+        xr=df[0]+8988
+        y = interp1d(xr,rehr,bounds_error=False,fill_value=0)(self.x)
+        return self.x, y
 
     def get_HAPG_norm_abs(self,file_path):
         norm_abs = self.HAPG_proc.HAPG_file2norm_abs(file_path)
 
-        return norm_abs[self.HAPG_proc.spec_iSel]
+        return (self.HAPG_proc.spec_eV[self.HAPG_proc.spec_iSel], norm_abs[self.HAPG_proc.spec_iSel])

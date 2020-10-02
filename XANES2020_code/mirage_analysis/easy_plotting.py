@@ -80,6 +80,7 @@ class LinePlot(pg.GraphicsLayoutWidget):
         super().__init__()
 
         p = self.addPlot()
+        self.p = p
         curve = p.plot([0])
 
         data_processor = self.Processor(self, diag_name=diag_name)

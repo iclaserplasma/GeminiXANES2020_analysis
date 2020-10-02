@@ -133,19 +133,24 @@ server.diag_list.addItem('Pinhole')
 # --------- HAPG
 
 diag = 'HAPG'
-beam_run_name = r'20200929/run28'
+beam_run_name = r'20201002/run06'
 
 HAPG_plot = HAPG_live_plotter(beam_run_name)
 
 win.add_line_plot(diag + ' absorption', diag, HAPG_plot.get_HAPG_norm_abs)
-win.add_line_plot(diag + 'XAFS', diag, HAPG_plot.get_HAPG_norm_abs)
+x,y=  HAPG_plot.get_theoretical_data()
+
+win.docks[diag + ' absorption'].widgets[0].p.plot(x, y,pen=dict(color='r'))
+#,pen=dict(color='r',dash=[4,4])
 win.add_image_plot(diag, diag, dx420_img)
+win.add_line_plot(diag+' x lineout', diag, dx420_mean_x)
+win.add_line_plot(diag+' y lineout', diag, dx420_mean_y)
 server.diag_list.addItem(diag)
 
 
 #----------- GigE's
 
-gigE_diag_list = ['TopView', 'F40focus', 'LMS']
+gigE_diag_list = ['TopView', 'F40focus', 'LMS', 'LMI']
 for diag in gigE_diag_list:
     win.add_image_plot(diag, diag, basic_image)
     server.diag_list.addItem(diag) 
@@ -156,6 +161,7 @@ server.run_name.setText('20200929/run27')
 server.shot_num.setValue(1)
 
 win.load_dock_arrangement()
+
 win.show()
 win.raise_()
 # server.connected.connect(win.show)
