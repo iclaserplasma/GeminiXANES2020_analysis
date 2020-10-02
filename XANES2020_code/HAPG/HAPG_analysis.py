@@ -45,6 +45,9 @@ class HAPG_processor:
         # self.x_offset=cal_info['x_offset']
         self.spec_eV = cal_info['spec_eV']
         self.iSel = cal_info['iSel']
+        self.material_rho = cal_info['material_rho'] # Cu 8.96 #g/cm^3
+        self.material_thickness =  cal_info['material_thickness'] # 0.4  #cm
+        self.spec_iSel = cal_info['spec_iSel']
         if 'sig_mask' in cal_info.keys():
             self.sig_mask = cal_info['sig_mask']
         if 'beam_ref' in cal_info.keys():
@@ -100,17 +103,18 @@ class HAPG_processor:
         trans = spec_y_norm/self.beam_ref
         return trans
 
-    def trans2xafs(self,trans):
-        xafs= (0.65-trans)*0.3+0.12
-        return xafs
+    def trans2norm_abs(self,trans):
+        
+        norm_abs = 1-trans**(1/(self.material_rho*self.material_thickness))
+        return norm_abs
     
 
-    def HAPG_file2xafs(self,file_path):
+    def HAPG_file2norm_abs(self,file_path):
         data = self.HAPG_file2data(file_path)
         spec_y = self.get_spec_y(data)
         self.trans = self.spec2trans(spec_y)
-        xafs = self.trans2xafs(self.trans)
-        return xafs
+        norm_abs = self.trans2norm_abs(self.trans)
+        return norm_abs
 
 def proc_spec(spec_list,smooth_sigma=None):
     x = np.arange(len(spec_list[0]))

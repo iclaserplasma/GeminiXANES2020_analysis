@@ -3,12 +3,17 @@ import numpy as np
 from scipy.interpolate import interp1d
 from skimage.io import imread
 from PIL import Image
+from pathlib import Path
+from glob import glob
+from skimage.measure import label, regionprops
+
 from XANES2020_code.paths import DATA_FOLDER, CAL_DATA
 from XANES2020_code.Espec import espec_processing 
 from XANES2020_code.general_tools import choose_cal_file, load_object
 from XANES2020_code.Betatron_analysis.beam_fitting import function_beam_fitter
 from XANES2020_code.Betatron_analysis import xray_analysis as xray
-from skimage.measure import label, regionprops
+from XANES2020_code.HAPG.HAPG_analysis import HAPG_processor
+
 
 # CAL_DATA = r'C:\Users\CLFUser\Documents\ProcessedCalibrations'
 
@@ -270,3 +275,34 @@ class crystal_spec_proc:
         return step_idx
                                  
     
+class HAPG_live_plotter():
+
+    cal_file_pref = 'HAPG_cal'
+    diag = 'HAPG'
+    def __init__(self,beam_run_name):
+        self.beam_run_name = beam_run_name
+        self.HAPG_cal_file_path = choose_cal_file(self.beam_run_name,1,self.diag,self.cal_file_pref)
+        self.HAPG_proc = HAPG_processor(HAPG_cal_file_path=self.HAPG_cal_file_path)
+
+        if self.HAPG_proc.beam_ref is None:
+            file_stem = str(Path(DATA_FOLDER) / self.diag / self.beam_run_name / 'Shot*' )
+            beam_file_list = glob(file_stem)
+            beam_ref,beam_ref_rms = self.HAPG_proc.get_beam_ref(beam_file_list)
+            cal_info = load_object(self.HAPG_cal_file_path)
+            cal_info['beam_ref'] = beam_ref
+            cal_info['beam_ref_rms'] = beam_ref_rms
+            
+            new_cal_path = (Path(CAL_DATA) / self.diag / (self.cal_file_pref + '_'+
+                            self.beam_run_name.split(r'/')[0] +'_' +
+                            self.beam_run_name.split(r'/')[1] + f'_shot{len(beam_file_list):03}.pkl'))
+            save_object(cal_info,new_cal_path)
+            self.HAPG_cal_file_path =new_cal_path
+            self.HAPG_proc = HAPG_processor(HAPG_cal_file_path=self.HAPG_cal_file_path)
+
+        self.x = self.HAPG_proc.spec_eV[self.HAPG_proc.spec_iSel]
+
+
+    def get_HAPG_norm_abs(file_path):
+        norm_abs = self.HAPG_proc.HAPG_file2norm_abs(file_path)
+
+        return norm_abs[self.HAPG_proc.spec_iSel]
