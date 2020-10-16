@@ -116,3 +116,6 @@ def calc_COW(img,X=None,Y=None,img_thresh=0.5):
     c_x = np.sum(X[iSel]*img[iSel])/np.sum(img[iSel])
     c_y = np.sum(Y[iSel]*img[iSel])/np.sum(img[iSel])
     return c_x,c_y
+
+def glob_path(p):
+    return glob(str(p))
