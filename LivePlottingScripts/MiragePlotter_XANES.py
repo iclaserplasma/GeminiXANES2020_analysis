@@ -125,15 +125,17 @@ for diag in andor_diag_list:
     win.add_line_plot(diag+' lineout', diag, dx420_mean_x)
     server.diag_list.addItem(diag)
 
-win.add_image_plot('Pinhole', 'Pinhole', dx420_img)
-win.add_line_plot('Pinhole'+' x lineout', 'Pinhole', dx420_mean_x)
-win.add_line_plot('Pinhole'+' y lineout', 'Pinhole', dx420_mean_y)
-server.diag_list.addItem('Pinhole')
+pinhole_diag_list = ['Pinhole', 'PinholeAl']
+for p in pinhole_diag_list:
+    win.add_image_plot(p, p, dx420_img)
+    win.add_line_plot(p+' x lineout', p, dx420_mean_x)
+    win.add_line_plot(p+' y lineout', p, dx420_mean_y)
+    server.diag_list.addItem(p)
 
 # --------- HAPG
 
 diag = 'HAPG'
-beam_run_name = r'20201002/run06'
+beam_run_name = r'20201117/run06'
 
 HAPG_plot = HAPG_live_plotter(beam_run_name)
 
