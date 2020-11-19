@@ -284,6 +284,7 @@ class HAPG_live_plotter():
     def __init__(self,beam_run_name):
         self.beam_run_name = beam_run_name
         self.HAPG_cal_file_path = choose_cal_file(self.beam_run_name,999,self.diag,self.cal_file_pref)
+        print(self.HAPG_cal_file_path)
         self.HAPG_proc = HAPG_processor(HAPG_cal_file_path=self.HAPG_cal_file_path)
         print(np.min(self.HAPG_proc.spec_eV[self.HAPG_proc.spec_iSel]))
         print(np.max(self.HAPG_proc.spec_eV[self.HAPG_proc.spec_iSel]))

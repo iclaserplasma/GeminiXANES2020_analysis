@@ -104,7 +104,7 @@ class HAPG_processor:
 
         res = minimize(err_fcn,x0=1)
         spec_y_norm = spec_y_norm*res.x[0]
-        trans = spec_y_norm/self.beam_ref
+        trans = spec_y_norm/self.beam_ref*(self.beam_ref>0.01)
         return trans
 
     def trans2norm_abs(self,trans):
