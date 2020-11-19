@@ -47,6 +47,7 @@ class Espec_high_proc:
                         'Espec_high_disp_cal',cal_data_path=CAL_DATA)
 
         # setup espec processor
+        print(tForm_filepath)
         eSpec_proc = espec_processing.ESpec_high_proc(tForm_filepath,Espec_cal_filepath,
                              img_bkg=img_bkg,use_median=True,kernel_size=None )
         self.eSpec_proc = eSpec_proc

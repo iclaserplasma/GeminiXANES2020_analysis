@@ -29,6 +29,7 @@ server = Ui_fake_server()
 
 win = easy_plotting.DockView(server, DATA_FOLDER)
 
+
 ## High espec plots
 run_name = datetime.today().strftime('%Y%m%d')+'/run01'
 Espec_high_obj = Espec_high_proc(run_name,shot_num=1,img_bkg=None)
@@ -47,6 +48,7 @@ win.add_image_plot_with_axes('Lundatron', 'Lundatron', pil_img_array,
         [(0, 0), (2048, 2048)],
         [(0, 0), (2048, 2048)])
 server.diag_list.addItem('Lundatron')
+
 
 ## Gematron plot
 bkg_file = os.path.join(DATA_FOLDER,'Gematron/20200907/run01/Shot001.tif')
@@ -84,6 +86,7 @@ win.add_scalar_history_plot('Gematron photons', 'Gematron', HistoryShots, get_be
 win.add_scalar_history_plot('Gematron mean counts', 'Gematron', HistoryShots, get_mean_beam_counts)
 server.diag_list.addItem('Gematron')
 
+
 ## dx420 plots
 
 def basic_image(file_path):
@@ -105,10 +108,12 @@ for diag in andor_diag_list:
     win.add_line_plot(diag+' lineout', diag, dx420_mean_x)
     server.diag_list.addItem(diag)
 
-win.add_image_plot('Pinhole', 'Pinhole', basic_image)
-win.add_line_plot('Pinhole'+' x lineout', 'Pinhole', dx420_mean_x)
-win.add_line_plot('Pinhole'+' y lineout', 'Pinhole', dx420_mean_y)
-server.diag_list.addItem('Pinhole')
+pinhole_diag_list = ['Pinhole', 'PinholeAl']
+for diag in pinhole_diag_list:
+    win.add_image_plot(diag, diag, basic_image)
+    win.add_line_plot(diag+' x lineout', diag, dx420_mean_x)
+    win.add_line_plot(diag+' y lineout', diag, dx420_mean_y)
+    server.diag_list.addItem(diag)
 
 
 gigE_diag_list = ['TopView', 'Crystal', 'F40focus', 'LMS', 'HMS', 'LMI']
