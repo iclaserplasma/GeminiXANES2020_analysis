@@ -135,7 +135,7 @@ for p in pinhole_diag_list:
 # --------- HAPG
 
 diag = 'HAPG'
-beam_run_name = r'20201002/run06'
+beam_run_name = r'20201117/run06'
 
 HAPG_plot = HAPG_live_plotter(beam_run_name)
 
