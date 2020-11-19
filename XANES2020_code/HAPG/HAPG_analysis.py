@@ -109,7 +109,8 @@ class HAPG_processor:
 
     def trans2norm_abs(self,trans):
         
-        norm_abs = 1-trans**(1/(self.material_rho*self.material_thickness))
+        # norm_abs = 1-trans**(1/(self.material_rho*self.material_thickness))
+        norm_abs = 1-trans
         return norm_abs
     
 
