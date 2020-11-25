@@ -119,3 +119,9 @@ def calc_COW(img,X=None,Y=None,img_thresh=0.5):
 
 def glob_path(p):
     return glob(str(p))
+
+def smooth_gauss(x,y,sigma_x):
+    X1,X2 = np.meshgrid(x,x)
+    W = np.exp(-(X1-X2)**2/(2*sigma_x**2))
+    y_smooth = np.sum(W*y,axis=1)/np.sum(W,axis=1)
+    return y_smooth
