@@ -62,10 +62,18 @@ class google_sheet_retrieval:
     def get_run(self,run_name):
 
         run_dt = datetime.strptime(run_name[:8],'%Y%m%d')
-        run_date = run_dt.strftime('%d/').lstrip('0')+run_dt.strftime('%m/').lstrip('0')+run_dt.strftime('%Y')
+        run_date = run_dt.strftime('%d/')+run_dt.strftime('%m/').lstrip('0')+run_dt.strftime('%Y')
         run_run = int(run_name[12:])
         match_df = self.sheet_df.loc[self.sheet_df['date'].str.match(run_date)]
         match_df = match_df.loc[self.sheet_df['run'].str.match(str(run_run))]
+        if len(match_df)<1:
+            run_date = run_dt.strftime('%d/')+run_dt.strftime('%m/').lstrip('0')+run_dt.strftime('%y')
+            match_df = self.sheet_df.loc[self.sheet_df['date'].str.match(run_date)]
+            match_df = match_df.loc[self.sheet_df['run'].str.match(str(run_run))]
+        if len(match_df)<1:
+            run_date = run_dt.strftime('%d/')+run_dt.strftime('%m/')+run_dt.strftime('%Y')
+            match_df = self.sheet_df.loc[self.sheet_df['date'].str.match(run_date)]
+            match_df = match_df.loc[self.sheet_df['run'].str.match(str(run_run))]
         self.match_df = match_df
         return match_df
     

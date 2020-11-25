@@ -9,12 +9,14 @@ from XANES2020_code.general_tools import load_object, choose_cal_file, get_cal_f
 def load_HAPG_image(file_path):
     return imread(file_path)
 
-def image_process(data,img_bkg=0,sub_median=False):
+def image_process(data,img_bkg=0,sub_median=False,kernel=None):
     
     data = data.astype(float) - img_bkg
     if sub_median:
         data = data - np.median(data)
-    return median_filter(data,5)
+    if kernel is not None:
+        data = median_filter(data,kernel)
+    return data
 
 def smooth_gaus(x,y,sigma_x):
     X1,X2 = np.meshgrid(x,x)
@@ -34,6 +36,7 @@ class HAPG_processor:
         self.data = None
         self.sig_width = 150
         self.sub_median = True
+        self.median_kernel = 3
         self.sigma_x = 1
         self.y = None
         self.sig_mask = None
@@ -61,7 +64,8 @@ class HAPG_processor:
 
     def HAPG_file2data(self,file_path):
         img = load_HAPG_image(file_path)
-        data = image_process(img,self.img_bkg,sub_median=self.sub_median)
+        data = image_process(img,self.img_bkg,
+            sub_median=self.sub_median, kernel =  self.median_kernel)
         return data
         
     def find_sig_mask(self,data):
