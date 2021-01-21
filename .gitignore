@@ -137,3 +137,4 @@ LivePlottingScripts/server.pem
 Notebooks/token.pickle
 Notebooks/credentials.json
 .ipynb
+*.ipynb
