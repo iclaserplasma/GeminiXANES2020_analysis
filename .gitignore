@@ -136,3 +136,4 @@ LivePlottingScripts/server.pem
 .DS_Store
 Notebooks/token.pickle
 Notebooks/credentials.json
+.ipynb
