@@ -25,10 +25,13 @@ from pyqtgraph import PlotDataItem
 app = QtCore.QCoreApplication.instance()
 if app is None:
     app = QtWidgets.QApplication(sys.argv)
-    
-HistoryShots = 20
+
+HistoryShots = 30
 
 server = Ui_fake_server()
+
+print(server.run_name.text(), server.shot_num.value())
+
 
 win = easy_plotting.DockView(server, DATA_FOLDER)
 win.dock_arrangement_file = 'dock_state_XANES.pkl'
@@ -132,10 +135,17 @@ for p in pinhole_diag_list:
     win.add_line_plot(p+' y lineout', p, dx420_mean_y)
     server.diag_list.addItem(p)
 
+def get_mean_HOPG_counts(file_path):
+    img = dx420_img(file_path)
+    return  np.mean(img)
+
+win.add_scalar_history_plot('HOPG mean counts', 'HOPG', HistoryShots, get_mean_HOPG_counts)
+
 # --------- HAPG
 
 diag = 'HAPG'
-beam_run_name = r'20201117/run06'
+#beam_run_name = r'20201117/run06'
+beam_run_name = r'20201126/run07'
 
 HAPG_plot = HAPG_live_plotter(beam_run_name)
 
@@ -159,7 +169,7 @@ for diag in gigE_diag_list:
 
 
 
-server.run_name.setText('20200929/run27')
+server.run_name.setText('20201117/run08')
 server.shot_num.setValue(1)
 
 win.load_dock_arrangement()
@@ -167,5 +177,5 @@ win.load_dock_arrangement()
 win.show()
 win.raise_()
 # server.connected.connect(win.show)
-app.exec_()
 
+app.exec_()
